@@ -1,0 +1,21 @@
+#!/bin/sh
+# Macお片付け ランチャー: 同梱の server.py を python3 で起動する
+RES_DIR="$(cd "$(dirname "$0")/../Resources" && pwd)"
+LOG="$HOME/Library/Logs/MacCleanup.log"
+
+# 既に起動していたらブラウザだけ開く
+if /usr/bin/curl -s -o /dev/null "http://127.0.0.1:17890/api/data" 2>/dev/null; then
+  /usr/bin/open "http://127.0.0.1:17890/"
+  exit 0
+fi
+
+PY=""
+for cand in /usr/bin/python3 /opt/homebrew/bin/python3 /usr/local/bin/python3; do
+  if [ -x "$cand" ]; then PY="$cand"; break; fi
+done
+if [ -z "$PY" ]; then
+  /usr/bin/osascript -e 'display dialog "python3 が見つかりませんでした。Xcode Command Line Tools（xcode-select --install）が必要です。" buttons {"OK"} default button 1 with title "Macお片付け"'
+  exit 1
+fi
+
+exec "$PY" "$RES_DIR/server.py" >>"$LOG" 2>&1
