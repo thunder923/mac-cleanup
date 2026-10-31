@@ -455,6 +455,9 @@ select{font-size:13px;padding:6px;border-radius:8px;border:1px solid var(--borde
   <div id="folderChips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
  </div>
  <div id="sections"></div>
+ <div class="card"><h2>使い方・プライバシーポリシー</h2>
+ <p class="d">使い方：スキャンが終わるのを待って、消したいファイルにチェック → 下の「ゴミ箱へ入れる」→ 確認画面で対象を確認して実行します。削除ではなく Finder のゴミ箱への移動だけなので、あとから戻せます。詳しい使い方は同梱の「使い方.txt」を見てください。</p>
+ <p class="d">プライバシー：このツールの通信はこの Mac の中（127.0.0.1）だけです。ファイル名・ファイルの中身・スキャン結果などの情報が外部のサーバーへ送信されることは一切ありません。動作ログもこの Mac 内（~/Library/Logs/MacCleanup.log）にのみ保存されます。</p></div>
 </div>
 <div class="sticky"><span>選択中 <b id="selTotal">0 GB</b>（<span id="selCount">0</span>件）</span>
 <button class="btn danger" id="btnTrash" type="button" disabled>ゴミ箱へ入れる</button></div>
