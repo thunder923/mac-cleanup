@@ -402,9 +402,34 @@ HTML = r"""<!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Macお片付け</title>
+<script>
+  // テーマ (theme-mode): 既定は自動（OS連動）。画面上の選択で ライト/ダーク に固定でき、選択は localStorage に保存される
+  (function () {
+    var KEY = "theme-mode";
+    function mode() { try { return localStorage.getItem(KEY) || "auto"; } catch (e) { return "auto"; } }
+    function apply() {
+      var m = mode();
+      var dark = m === "dark" || (m !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+      var sel = document.getElementById("themeModeSel");
+      if (sel) sel.value = m;
+    }
+    apply();
+    document.addEventListener("DOMContentLoaded", apply);
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", apply);
+    document.addEventListener("change", function (e) {
+      if (e.target && e.target.id === "themeModeSel") {
+        try { localStorage.setItem(KEY, e.target.value); } catch (err) {}
+        apply();
+      }
+    });
+  })();
+</script>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--text:#1c2330;--muted:#68707d;--border:#dde1e8;--accent:#2563eb;--safe:#15803d;--dup:#b45309}
 @media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1e232c;--text:#eef1f6;--muted:#9aa3b2;--border:#333a46;--accent:#5b93ff;--safe:#4ade80;--dup:#fbbf24}}
+:root[data-theme="light"]{--bg:#f6f7f9;--card:#fff;--text:#1c2330;--muted:#68707d;--border:#dde1e8;--accent:#2563eb;--safe:#15803d;--dup:#b45309}
+:root[data-theme="dark"]{--bg:#14171c;--card:#1e232c;--text:#eef1f6;--muted:#9aa3b2;--border:#333a46;--accent:#5b93ff;--safe:#4ade80;--dup:#fbbf24}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans",sans-serif}
 .wrap{max-width:860px;margin:0 auto;padding:20px 16px 110px}
 h1{font-size:22px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px;line-height:1.6}
@@ -435,7 +460,7 @@ h2{font-size:15.5px;margin:0 0 4px}.d{color:var(--muted);font-size:12.5px;margin
 select{font-size:13px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)}
 </style></head><body>
 <div class="wrap">
- <h1>Macお片付け <span style="font-size:12px;color:var(--muted)">v1.1</span></h1>
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h1>Macお片付け <span style="font-size:12px;color:var(--muted)">v1.1</span></h1><select id="themeModeSel" aria-label="テーマ"><option value="auto">自動（OS連動）</option><option value="light">ライト</option><option value="dark">ダーク</option></select></div>
  <div class="sub">このMacの中の大容量ファイルを探して、安全なもの・重複・要判断に分けて表示します。チェックして「ゴミ箱へ入れる」を押すと、Finderのゴミ箱へ移動します（あとから戻せます）。ライブラリも対象ですが、キーチェーン（パスワード）・メール・メッセージ・写真・カレンダー・連絡先・アカウント・Safari・設定ファイルなど「絶対に消しちゃダメ」な場所は最初から表示しません。</div>
  <div class="card"><h2>ディスク使用量</h2><div class="bar"><i id="diskBar" style="width:0%"></i></div>
  <div class="nums"><span>合計 <b id="dTotal">-</b></span><span>使用中 <b id="dUsed">-</b></span><span>空き <b id="dFree">-</b></span></div></div>
